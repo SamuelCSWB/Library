@@ -1,5 +1,4 @@
 ﻿
-
 namespace Library.DTOs
 {
     public class CreateBookDTO
@@ -8,7 +7,7 @@ namespace Library.DTOs
         public int Isbn { get; set; }
         public DateTime ReleaseDate { get; set; }
 
-
+        public List<CreateAuthorDTO> Authors { get; set; } = new List<CreateAuthorDTO>();
     }
 
 
@@ -21,14 +20,19 @@ namespace Library.DTOs
 
     public static class DTOExtensions
     {
-        public static Book ToBook(this CreateBookDTO createBookDTO)
+        public static Book ToBook(this CreateBookDTO createBookDTO, LibraryContext context)
         {
+            
+            
             return new Book
             {
                 Title = createBookDTO.Title,
                 Isbn = createBookDTO.Isbn,
-                ReleaseDate = createBookDTO.ReleaseDate.Date
+                ReleaseDate = createBookDTO.ReleaseDate,
+                Authors = new List<Author>()
+                
             };
+            
         }
 
         public static Author ToAuthor(this CreateAuthorDTO createAuthorDTO)

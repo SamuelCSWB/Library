@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Library;
+using Library.DTOs;
 
 namespace Library.Controllers
 {
@@ -75,8 +76,9 @@ namespace Library.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<ActionResult<Author>> PostAuthor(CreateAuthorDTO createAuthorDTO)
         {
+            var author = createAuthorDTO.ToAuthor();
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
 

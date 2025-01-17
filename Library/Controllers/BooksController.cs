@@ -78,7 +78,29 @@ namespace Library.Controllers
         [HttpPost]
         public async Task<ActionResult<Book>> PostBook(CreateBookDTO createBookDTO)
         {
-            var book = createBookDTO.ToBook();
+            var book = createBookDTO.ToBook(_context);
+
+            foreach (var authorDTO in createBookDTO.Authors)
+            {
+                
+                var existingAuthor = await _context.Authors
+                    .FirstOrDefaultAsync(a => a.Firstname == authorDTO.Firstname && a.Lastname == authorDTO.Lastname);
+
+                if (existingAuthor != null)
+                {
+                    book.Authors.Add(existingAuthor);
+                }
+                else
+                {
+                    var newAuthor = new Author
+                    {
+                        Firstname = authorDTO.Firstname,
+                        Lastname = authorDTO.Lastname
+                    };
+                    book.Authors.Add(newAuthor);
+                    _context.Authors.Add(newAuthor);
+                }
+            }
 
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
@@ -107,4 +129,5 @@ namespace Library.Controllers
             return _context.Books.Any(e => e.BookId == id);
         }
     }
+
 }
