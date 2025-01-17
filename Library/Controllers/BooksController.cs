@@ -78,13 +78,13 @@ namespace Library.Controllers
         [HttpPost]
         public async Task<ActionResult<Book>> PostBook(CreateBookDTO createBookDTO)
         {
-            var book = createBookDTO.ToBook(_context);
+            var book = createBookDTO.ToBook();
 
             foreach (var authorDTO in createBookDTO.Authors)
             {
-                
-                var existingAuthor = await _context.Authors
-                    .FirstOrDefaultAsync(a => a.Firstname == authorDTO.Firstname && a.Lastname == authorDTO.Lastname);
+               var existingAuthor = _context.Authors
+                    .FirstOrDefault(a => a.Firstname == authorDTO.Firstname && a.Lastname == authorDTO.Lastname);
+
 
                 if (existingAuthor != null)
                 {

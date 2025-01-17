@@ -20,7 +20,7 @@ namespace Library.DTOs
 
     public static class DTOExtensions
     {
-        public static Book ToBook(this CreateBookDTO createBookDTO, LibraryContext context)
+        public static Book ToBook(this CreateBookDTO createBookDTO)
         {
             
             

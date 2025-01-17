@@ -78,9 +78,26 @@ namespace Library.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(CreateAuthorDTO createAuthorDTO)
         {
-            var author = createAuthorDTO.ToAuthor();
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
+               
+            var author = _context.Authors
+                .FirstOrDefault(a => a.Firstname == createAuthorDTO.Firstname && a.Lastname == createAuthorDTO.Lastname);
+
+            if(author == null)
+            {
+
+                author = new Author()
+                {
+                    Firstname = createAuthorDTO.Firstname,
+                    Lastname = createAuthorDTO.Lastname
+                };
+
+                _context.Authors.Add(author);
+                await _context.SaveChangesAsync();
+            }
+          
+
+            
+           
 
             return CreatedAtAction("GetAuthor", new { id = author.AuthorId }, author);
         }

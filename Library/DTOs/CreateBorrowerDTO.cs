@@ -1,6 +1,6 @@
 ﻿namespace Library.DTOs;
 
-public class CreateBorroweDTO
+public class CreateBorrowerDTO
 {
     public required string Firstname { get; set; }
     public required string Lastname { get; set; }
