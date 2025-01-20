@@ -80,7 +80,7 @@ namespace Library.Controllers
         {
                
             var author = _context.Authors
-                .FirstOrDefault(a => a.Firstname == createAuthorDTO.Firstname && a.Lastname == createAuthorDTO.Lastname);
+                .FirstOrDefault(a => a.Firstname.ToLower() == createAuthorDTO.Firstname.ToLower() && a.Lastname.ToLower() == createAuthorDTO.Lastname.ToLower());
 
             if(author == null)
             {

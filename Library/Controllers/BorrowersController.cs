@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Library;
+using Library.DTOs;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 
 namespace Library.Controllers
 {
@@ -75,8 +77,10 @@ namespace Library.Controllers
         // POST: api/Borrowers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Borrower>> PostBorrower(Borrower borrower)
+        public async Task<ActionResult<Borrower>> PostBorrower(CreateBorrowerDTO createBorrowerDto)
         {
+            var borrower = createBorrowerDto.ToBorrower();
+
             _context.Borrowers.Add(borrower);
             await _context.SaveChangesAsync();
 

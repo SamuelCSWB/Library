@@ -23,23 +23,23 @@ namespace Library.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<BookDTO>>> GetBooks()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books.Include(b => b.Authors).Select(b => b.ToBookDTO()).ToListAsync();
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookDetailsDTO>> GetBook(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books.Include(b => b.Authors).FirstOrDefaultAsync(b => b.BookId == id);
 
             if (book == null)
             {
                 return NotFound();
             }
 
-            return book;
+            return book.ToBookDetailsDTO();
         }
 
         // PUT: api/Books/5
@@ -83,7 +83,7 @@ namespace Library.Controllers
             foreach (var authorDTO in createBookDTO.Authors)
             {
                var existingAuthor = _context.Authors
-                    .FirstOrDefault(a => a.Firstname == authorDTO.Firstname && a.Lastname == authorDTO.Lastname);
+                    .FirstOrDefault(a => a.Firstname.ToLower() == authorDTO.Firstname.ToLower() && a.Lastname.ToLower() == authorDTO.Lastname.ToLower());
 
 
                 if (existingAuthor != null)

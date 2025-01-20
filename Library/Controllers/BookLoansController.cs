@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Library;
+using Library.DTOs;
 
 namespace Library.Controllers
 {
@@ -75,8 +76,22 @@ namespace Library.Controllers
         // POST: api/BookLoans
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BookLoan>> PostBookLoan(BookLoan bookLoan)
+        public async Task<ActionResult<BookLoan>> PostBookLoan(CreateLoanDTO createLoanDTO)
         {
+            var book = await _context.Books.FindAsync(createLoanDTO.BookId);
+            if (book == null || book.CheckedOut)
+            {
+                return BadRequest("The book is not available");
+            } 
+
+            var borrower = await _context.Borrowers.FindAsync(createLoanDTO.BorrowerId);
+            if (borrower == null)
+            {
+                return NotFound();
+            }
+
+            var bookLoan = createLoanDTO.ToBookLoan();
+            
             _context.BookLoans.Add(bookLoan);
             await _context.SaveChangesAsync();
 
