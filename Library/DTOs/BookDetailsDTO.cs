@@ -8,6 +8,6 @@ public class BookDetailsDTO
     public int ReleaseYear { get; set; }
     public required string Authors { get; set; }
     public required string Status { get; set; }
-    public DateTime ReturnDate { get; set; }
+    public string? ReturnDate { get; set; }
 
 }

@@ -45,12 +45,20 @@ namespace Library.Controllers
         // PUT: api/BookLoans/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookLoan(int id, BookLoan bookLoan)
+        public async Task<IActionResult> PutBookLoan(int id)
         {
-            if (id != bookLoan.BookLoanId)
+            var bookLoan = await _context.BookLoans
+                .FirstOrDefaultAsync(bl => bl.BookLoanId == id && bl.CheckedOut == true);
+
+            if (bookLoan == null)
             {
-                return BadRequest();
+                return NotFound("Book loan not found.");
             }
+
+
+            bookLoan.CheckedOut = false;
+            bookLoan.ReturnDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            
 
             _context.Entry(bookLoan).State = EntityState.Modified;
 
@@ -70,6 +78,7 @@ namespace Library.Controllers
                 }
             }
 
+
             return NoContent();
         }
 
@@ -78,13 +87,20 @@ namespace Library.Controllers
         [HttpPost]
         public async Task<ActionResult<BookLoan>> PostBookLoan(CreateLoanDTO createLoanDTO)
         {
-            var book = await _context.Books.FindAsync(createLoanDTO.BookId);
-            if (book == null || book.CheckedOut)
+            var book = await _context.Books.Include(b => b.BookLoans).FirstOrDefaultAsync(b => b.BookId == createLoanDTO.BookId);
+
+            if (book == null)
             {
                 return BadRequest("The book is not available");
-            } 
+            }
+
+            if (book.BookLoans.Any(bl => bl.CheckedOut))
+            {
+                return BadRequest("The book is not available");
+            }
 
             var borrower = await _context.Borrowers.FindAsync(createLoanDTO.BorrowerId);
+
             if (borrower == null)
             {
                 return NotFound();

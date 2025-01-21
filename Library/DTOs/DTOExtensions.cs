@@ -34,14 +34,19 @@ public static class DTOExtensions
 
     public static BookDetailsDTO ToBookDetailsDTO(this Book book)
     {
+
+        var activeLoan = book.BookLoans.FirstOrDefault(bl => bl.CheckedOut)?.CheckedOut ?? false;
+
         return new BookDetailsDTO()
         {
+
             BookId = book.BookId,
             Title = book.Title,
             Isbn = book.Isbn,
             ReleaseYear = book.ReleaseYear,
             Authors = book.Authors.ToStringAuthor(),
-            Status = book.CheckedOut ?  "Checked out" : "Available"
+            Status = activeLoan ? "Checked out" : "Available",
+            ReturnDate = book.BookLoans.FirstOrDefault(bl => bl.CheckedOut)?.ReturnDate
 
         };
     }
@@ -77,11 +82,11 @@ public static class DTOExtensions
             BookId = createLoanDTO.BookId,
             BorrowerId = createLoanDTO.BorrowerId,
             LoanDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-            ReturnDate = DateTime.Now.AddDays(28).ToString("yyyy - MM - dd HH: mm:ss"),
+            ReturnDate = DateTime.Now.AddDays(28).ToString("yyyy -MM-dd HH:mm:ss"),
             CheckedOut = true
 
         };
     }
 
-
+    
 }

@@ -32,7 +32,7 @@ namespace Library.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BookDetailsDTO>> GetBook(int id)
         {
-            var book = await _context.Books.Include(b => b.Authors).FirstOrDefaultAsync(b => b.BookId == id);
+            var book = await _context.Books.Include(b => b.Authors).Include(bl => bl.BookLoans).FirstOrDefaultAsync(b => b.BookId == id);
 
             if (book == null)
             {
